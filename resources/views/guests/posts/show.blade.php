@@ -5,9 +5,13 @@
 
   <div class="container">
     <div class="row">
-      <div>
-        <img src="{{ $post->image_path }}" alt="">
-      </div>
+      <div class="col-12">
+        @if (!empty($post->image_path))
+          <div>
+            <img src="{{ asset('storage') . '/' . $post->image_path }}" alt="postImage">
+          </div>
+        @endif
+      </div>          
       <div>
         <p>{{ $post->content }}</p>
       </div>

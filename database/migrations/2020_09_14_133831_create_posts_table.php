@@ -22,7 +22,7 @@ class CreatePostsTable extends Migration
                 ->on('users');
 
             $table->string('title');
-            $table->longtext('image_path');
+            $table->longtext('image_path')->nullable();
             $table->text('content');
             $table->timestamps();
         });

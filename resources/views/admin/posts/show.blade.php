@@ -10,9 +10,11 @@
           <h3>Autore: {{ $post->user->name }}</h3>
           <h4>Email: {{ $post->user->email }}</h4>
         </div>
-        <div>
-          <img src="{{ $post->image_path }}" alt="post_image">
-        </div>
+        @if (!empty($post->image_path))
+          <div>
+            <img src="{{ asset('storage') . '/' . $post->image_path }}" alt="postImage">
+          </div>
+        @endif
         <p>{{ $post->content }}</p>
       </div>
     </div>

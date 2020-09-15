@@ -29,7 +29,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $posts = Post::all();
+
+        return view('admin.posts.create', compact('posts'));
     }
 
     /**
@@ -40,7 +42,32 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      if (!Auth::check()) {
+        abort('404');
+      }
+
+      // Validazione
+      $request->validate($this->validationData());
+
+      $request_data = $request->all();
+      // dd($requested_data);
+
+
+
+      // Nuova istanza Car
+      $new_post = new post();
+      $new_post->title = $request_data['title'];
+      $new_post->content = $request_data['content'];
+      $new_post->user_id = Auth::id();
+
+      if (isset($request_data['image_path'])) {
+        $path = $request->file('image_path')->store('images', 'public');
+        $new_post->image_path = $path;
+      }
+
+      $new_post->save();
+
+      return redirect()->route('posts.show', $new_post);
     }
 
     /**
@@ -60,9 +87,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+      $posts = Post::all();
+
+      return view('admin.posts.edit', compact('post'));
     }
 
     /**
@@ -72,9 +101,31 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+      if (!Auth::check()) {
+        abort('404');
+      }
+
+      // Validazione
+      $request->validate($this->validationData());
+
+      $request_data = $request->all();
+
+      $post->title = $request_data['title'];
+      $post->content = $request_data['content'];
+      $post->user_id = Auth::id();
+
+      if (isset($request_data['image_path'])) {
+        $path = $request->file('image_path')->store('images', 'public');
+        $post->image_path = $path;
+      }
+
+      $post->update();
+
+      $post->save();
+
+      return redirect()->route('posts.show', $post);
     }
 
     /**
@@ -83,8 +134,17 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+     public function destroy(post $post)
+     {
+         $post->delete();
+         return redirect()->route('posts.index');
+     }
+
+     public function validationData() {
+       return [
+         'title' => 'required|max:255',
+         'content' => 'required|max:1000',
+         'image_path' => 'image',
+       ];
+     }
 }
