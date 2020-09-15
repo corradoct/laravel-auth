@@ -16,6 +16,18 @@
 
                     {{ __('You are logged in!') }}
                 </div>
+
+                <div>
+                  <a href="{{ route('admin.posts.create') }}">Crea un nuovo post</a>
+                </div>
+
+                <div>
+                  <a href="{{ route('admin.posts.index') }}">Lista post admin</a>
+                </div>
+
+                <div>
+                  <a href="{{ route('posts.index') }}">Lista post pubblica</a>
+                </div>
             </div>
         </div>
     </div>

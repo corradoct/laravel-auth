@@ -31,4 +31,8 @@
 
   <a href="/">Home</a>
 
+  <div>
+    <a href="{{ route('posts.index') }}">Lista pubblica</a>
+  </div>
+
 @endsection

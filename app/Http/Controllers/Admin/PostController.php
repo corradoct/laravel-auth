@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\PostCreatedMail;
+use App\Mail\PostEditedMail;
+use App\Mail\PostDeletedMail;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -67,6 +71,8 @@ class PostController extends Controller
 
       $new_post->save();
 
+      Mail::to($new_post->user->email)->send(new PostCreatedMail());
+
       return redirect()->route('posts.show', $new_post);
     }
 
@@ -119,11 +125,15 @@ class PostController extends Controller
       if (isset($request_data['image_path'])) {
         $path = $request->file('image_path')->store('images', 'public');
         $post->image_path = $path;
+      } else {
+        $post->image_path = '';
       }
 
       $post->update();
 
       $post->save();
+
+      Mail::to($post->user->email)->send(new PostEditedMail());
 
       return redirect()->route('posts.show', $post);
     }
@@ -137,6 +147,7 @@ class PostController extends Controller
      public function destroy(post $post)
      {
          $post->delete();
+         Mail::to($post->user->email)->send(new PostDeletedMail());
          return redirect()->route('posts.index');
      }
 
